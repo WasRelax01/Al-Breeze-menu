@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menyu Sistemi</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <span class="time">15:58</span>
+            <div class="connection-status">
+                <i class="fas fa-signal"></i>
+                <span>LTE</span>
+                <span class="battery">58</span>
+                <i class="fas fa-battery-half"></i>
+            </div>
+        </header>
+
+        <div id="language-selection" class="screen active">
+            <div class="top-bar">
+                <i class="fas fa-link"></i>
+                <span class="domain">Azimoff.menu</span>
+                <button class="close-btn" onclick="hideLanguageSelection()"><i class="fas fa-times"></i></button>
+            </div>
+            <h2 class="screen-title">Dil seçin</h2>
+            <div class="language-grid">
+                <div class="language-item" data-lang="az">
+                    <img src="images/azerbaycan.png" alt="Azerbaycanca">
+                    <span>Azerbaycanca</span>
+                </div>
+              
+                <div class="language-item" data-lang="tr">
+                    <img src="images/turkce.png" alt="Türkçe">
+                    <span>Türkçe</span>
+                </div>
+              
+                <div class="language-item" data-lang="en">
+                    <img src="images/english.png" alt="English">
+                    <span>English</span>
+                </div>
+                <div class="language-item" data-lang="ru">
+                    <img src="images/russian.png" alt="Русский">
+                    <span>Русский</span>
+                </div>
+               
+            </div>
+            <button class="confirm-btn" id="confirm-language-btn" disabled>Təsdiq et</button>
+        </div>
+
+        <div id="menu-screen" class="screen">
+            <div class="top-bar menu-top-bar">
+                <button class="back-btn" onclick="showLanguageSelection()"><i class="fas fa-arrow-left"></i></button>
+                <i class="fas fa-link"></i>
+                <span class="domain">Azimoff.clopos.menu</span>
+                <span class="app-name">Instagram</span>
+                <div class="menu-icons">
+                    <button><i class="fas fa-bars"></i></button>
+                    <button><i class="fas fa-search"></i></button>
+                </div>
+            </div>
+            <div class="menu-content">
+                <div class="menu-categories" id="menu-categories">
+                    </div>
+
+                <div id="menu-items-container"></div>
+            </div>
+
+            <div class="cart-summary">
+                <div class="cart-icon"><i class="fas fa-shopping-basket"></i></div>
+                <span>Cəm: <span id="cart-total">0.00</span> ₼</span>
+            </div>
+
+            <footer class="bottom-nav">
+                <a href="#"><i class="fas fa-home"></i></a>
+                <a href="#"><i class="fas fa-comment"></i></a>
+                <a href="#"><i class="fas fa-qrcode"></i></a>
+                <a href="#"><i class="fas fa-bell"></i></a>
+                <a href="#"><i class="fas fa-cog"></i></a>
+            </footer>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
