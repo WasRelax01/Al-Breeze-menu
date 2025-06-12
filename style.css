@@ -1,0 +1,666 @@
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #000; /* Qara fon */
+    color: #fff; /* Ağ yazı rəngi */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    overflow: hidden; /* Səhifənin scroll olmaması üçün */
+}
+
+.container {
+    width: 100%;
+    max-width: 400px; /* Mobil görünüşə uyğun genişlik */
+    height: 100vh; /* Tam ekran hündürlüyü */
+    background-color: #1a1a1a; /* Biraz daha açıq qara ton */
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden; /* Təmin edir ki, ekranlar arasında keçid zamanı overflow olmasın */
+}
+
+/* Header - Saat, Bağlantı Statusu */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    background-color: #000;
+    font-size: 14px;
+    color: #fff;
+}
+
+.time {
+    font-weight: bold;
+}
+
+.connection-status {
+    display: flex;
+    align-items: center;
+}
+
+.connection-status i {
+    margin-right: 5px;
+    color: #fff;
+}
+
+.battery {
+    margin-left: 5px;
+}
+
+/* Ortak Ekran Stilleri */
+.screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #1a1a1a; /* Ekranın fon rəngi */
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    opacity: 0;
+    transform: translateX(100%);
+    transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out;
+    pointer-events: none; /* Klik hadisələrini deaktiv edir */
+}
+
+.screen.active {
+    opacity: 1;
+    transform: translateX(0);
+    pointer-events: all; /* Klik hadisələrini aktiv edir */
+}
+
+/* Top Bar (Dil Seçimi Ekranı) */
+.top-bar {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    background-color: #000;
+    color: #a0a0a0;
+    font-size: 14px;
+}
+
+.top-bar i {
+    margin-right: 5px;
+    color: #a0a0a0;
+}
+
+.top-bar .domain {
+    flex-grow: 1;
+    text-align: center;
+    color: #a0a0a0;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 0;
+    margin-left: auto; /* Sağ tərəfə hizalama */
+}
+
+.close-btn i {
+    color: #fff; /* X işarəsinin ağ olması */
+    margin: 0; /* Boşluqları təmizləyir */
+}
+
+.screen-title {
+    text-align: center;
+    margin: 20px 0;
+    font-size: 22px;
+    font-weight: normal;
+    color: #fff;
+}
+
+/* Dil Seçimi Gridi */
+.language-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    padding: 0 20px;
+    flex-grow: 1; /* Yerdə qalan boşluğu doldurur */
+    overflow-y: auto; /* Lazım gələrsə scroll */
+}
+
+.language-item {
+    background-color: #333;
+    border-radius: 8px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    border: 2px solid transparent; /* Default border */
+}
+
+.language-item:hover {
+    background-color: #444;
+}
+
+.language-item.selected {
+    background-color: #4c4c4c; /* Seçiləndə daha tünd fon */
+    border-color: #007bff; /* Mavi border */
+}
+
+.language-item img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 50%; /* Bayraqları dairəvi edir */
+    margin-bottom: 10px;
+    border: 1px solid #555; /* Bayraqların kənarında incə çərçivə */
+}
+
+.language-item span {
+    font-size: 16px;
+    color: #fff;
+    text-align: center;
+}
+
+/* Təsdiq Et Butonu */
+.confirm-btn {
+    width: calc(100% - 40px); /* Paddingi nəzərə alır */
+    padding: 15px;
+    margin: 20px auto;
+    background-color: #a82e2e; /* Qırmızı rəng */
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    opacity: 0.6; /* Disabled vəziyyət */
+    pointer-events: none; /* Disabled vəziyyət */
+}
+
+.confirm-btn:enabled {
+    opacity: 1;
+    pointer-events: all;
+    background-color: #c93b3b; /* Aktiv olanda daha parlaq qırmızı */
+}
+
+.confirm-btn:enabled:hover {
+    background-color: #e04a4a;
+}
+
+/* Menyu Ekranı Stilleri */
+.menu-screen {
+    padding-top: 0; /* Header yuxarıda olduğu üçün padding silinir */
+}
+
+.menu-top-bar {
+    justify-content: flex-start;
+    padding-left: 0; /* Sol tərəfdəki boşluq silinir */
+}
+
+.menu-top-bar .back-btn {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 0 15px;
+}
+
+.menu-top-bar .back-btn i {
+    color: #fff;
+}
+
+.menu-top-bar .domain {
+    margin-left: 10px;
+    text-align: left;
+    flex-grow: 0;
+}
+
+.menu-top-bar .app-name {
+    margin-left: 10px;
+    color: #a0a0a0;
+}
+
+.menu-top-bar .menu-icons {
+    margin-left: auto;
+}
+
+.menu-top-bar .menu-icons button {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 24px;
+    cursor: pointer;
+    margin-left: 15px;
+}
+
+.menu-content {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 0 15px 70px; /* Aşağı nav bar üçün yer saxla */
+}
+
+.menu-categories {
+    display: flex;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch; /* iOS smooth scrolling */
+    white-space: nowrap; /* Buttonların bir sətirdə qalması üçün */
+    padding: 15px 0;
+    border-bottom: 1px solid #333;
+    margin-bottom: 20px;
+}
+
+.menu-categories::-webkit-scrollbar {
+    display: none; /* Scrollbarı gizlədir */
+}
+
+.category-btn {
+    background-color: #333;
+    color: #a0a0a0;
+    border: none;
+    border-radius: 20px;
+    padding: 8px 15px;
+    margin-right: 10px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    flex-shrink: 0; /* Düymələrin kiçilməməsi üçün */
+}
+
+.category-btn.active {
+    background-color: #c93b3b; /* Aktiv kateqoriya rəngi */
+    color: #fff;
+}
+
+.category-btn:hover:not(.active) {
+    background-color: #444;
+}
+
+.section-title {
+    font-size: 20px;
+    margin-top: 20px;
+    margin-bottom: 15px;
+    color: #fff;
+}
+
+.menu-item {
+    background-color: #333;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    position: relative;
+    overflow: hidden; /* Add to cart butonu üçün */
+}
+
+.menu-item img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-right: 15px;
+}
+
+.menu-item .item-details {
+    flex-grow: 1;
+}
+
+.menu-item h3 {
+    margin: 0 0 5px 0;
+    font-size: 18px;
+    color: #fff;
+}
+
+.menu-item p {
+    margin: 0;
+    font-size: 13px;
+    color: #a0a0a0;
+}
+
+.menu-item .old-price {
+    text-decoration: line-through;
+    color: #777;
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+.menu-item .current-price {
+    color: #ffc107; /* Sarı rəng */
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.add-to-cart-btn {
+    background-color: #a82e2e; /* Qırmızı rəng */
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    flex-shrink: 0; /* Buttonun ölçüsü dəyişməsin */
+    position: absolute; /* Şəkildəki kimi sağ alt küncdə olması üçün */
+    bottom: 10px;
+    right: 10px;
+}
+
+.add-to-cart-btn:hover {
+    background-color: #c93b3b;
+}
+
+/* Çay Setləri gridi */
+.tea-sets-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2 sütun */
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.tea-set-item {
+    background-color: #333;
+    border-radius: 10px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    min-height: 220px; /* Hündürlüyü tənzimlə */
+}
+
+.tea-set-item img {
+    width: 100%;
+    height: 120px; /* Şəkil hündürlüyü */
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+.tea-set-item .tea-set-details {
+    flex-grow: 1;
+    width: 100%;
+    padding: 0 5px; /* İç padding */
+}
+
+.tea-set-item h3 {
+    margin: 0 0 5px 0;
+    font-size: 16px;
+    color: #fff;
+}
+
+.tea-set-item p {
+    margin: 0;
+    font-size: 12px;
+    color: #a0a0a0;
+}
+
+.tea-set-item .price {
+    font-weight: bold;
+    color: #ffc107;
+    margin-top: 5px;
+}
+
+.tea-set-item .add-to-cart-btn {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    width: 35px;
+    height: 35px;
+    font-size: 18px;
+}
+
+
+/* Səbət Xülasəsi */
+.cart-summary {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: calc(100% - 40px); /* 20px sağdan soldan padding */
+    max-width: 360px; /* Mobil genişliyə uyğun */
+    background-color: #a82e2e; /* Qırmızı rəng */
+    color: #fff;
+    padding: 15px 20px;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: bold;
+    box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.3);
+    z-index: 100;
+}
+
+.cart-summary .cart-icon {
+    margin-right: 10px;
+    font-size: 24px;
+}
+
+
+/* Bottom Navigation (əgər istifadə edilərsə) */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    max-width: 400px; /* Ana konteynerlə eyni genişlik */
+    background-color: #000;
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+    border-top: 1px solid #333;
+    z-index: 99; /* Z-index-i kart cəmindən aşağı olsun */
+}
+
+.bottom-nav a {
+    color: #a0a0a0;
+    font-size: 22px;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 5px;
+}
+
+.bottom-nav a:hover {
+    color: #fff;
+}
+/* ... (əvvəlki CSS kodları) ... */
+
+.menu-content {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 0 15px 100px; /* Aşağı nav bar və səbət paneli üçün yer saxla */
+    /* Əvvəlki 70px idi, indi 100px edirik ki, səbət paneli də içəridə görünsün */
+}
+
+/* ... (qalan CSS kodları) ... */
+/* ... (əvvəlki bütün CSS kodları) ... */
+
+/* Responsivlik əlavələri */
+
+/* Ümumi konteyner üçün kiçik ekranlarda bəzi düzəlişlər */
+@media (max-width: 420px) {
+    .container {
+        width: 100%;
+        height: 100vh;
+        max-width: none; /* Kiçik ekranlarda max-width məhdudiyyətini qaldır */
+        border-radius: 0; /* Kənar radiusları yox et */
+        box-shadow: none; /* Kölgələri yox et */
+    }
+
+    body {
+        align-items: flex-start; /* Konteneri yuxarıdan başla */
+        justify-content: flex-start; /* Konteneri soldan başla */
+    }
+
+    .header, .top-bar, .bottom-nav, .cart-summary {
+        width: 100%; /* Tam genişlik təmin et */
+        max-width: none;
+        left: 0;
+        transform: none;
+        border-radius: 0;
+    }
+
+    .cart-summary {
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+    }
+
+    .language-grid {
+        grid-template-columns: repeat(2, 1fr); /* 2 sütun saxlayırıq, amma boşluqları tənzimləyə bilərik */
+        padding: 0 15px;
+        gap: 10px; /* Kiçik boşluq */
+    }
+
+    .language-item img {
+        width: 50px;
+        height: 50px;
+    }
+
+    .language-item span {
+        font-size: 14px;
+    }
+
+    .confirm-btn {
+        width: calc(100% - 30px); /* Daha az padding */
+        margin: 15px auto;
+        font-size: 16px;
+    }
+
+    .menu-content {
+        padding: 0 10px 100px; /* Kiçik ekranlarda daha az padding */
+    }
+
+    .menu-categories {
+        padding: 10px 0;
+    }
+
+    .category-btn {
+        padding: 7px 12px;
+        font-size: 13px;
+    }
+
+    .menu-item {
+        padding: 10px;
+        margin-bottom: 10px;
+    }
+
+    .menu-item img {
+        width: 70px;
+        height: 70px;
+        margin-right: 10px;
+    }
+
+    .menu-item h3 {
+        font-size: 16px;
+    }
+
+    .menu-item p {
+        font-size: 12px;
+    }
+
+    .add-to-cart-btn {
+        width: 35px;
+        height: 35px;
+        font-size: 18px;
+        bottom: 5px;
+        right: 5px;
+    }
+
+    .tea-sets-grid {
+        grid-template-columns: 1fr; /* Çay setləri kiçik ekranlarda 1 sütun olsun */
+        gap: 10px;
+    }
+
+    .tea-set-item {
+        min-height: auto; /* Avtomatik hündürlük */
+        padding: 10px;
+    }
+
+    .tea-set-item img {
+        height: 100px; /* Şəkil hündürlüyünü tənzimlə */
+        width: 100%;
+    }
+
+    .tea-set-item .add-to-cart-btn {
+        width: 30px;
+        height: 30px;
+        font-size: 16px;
+    }
+
+    .cart-summary {
+        padding: 12px 15px;
+        font-size: 16px;
+    }
+
+    .cart-summary .cart-icon {
+        font-size: 20px;
+    }
+
+    .bottom-nav a {
+        font-size: 20px;
+    }
+}
+
+/* Orta ölçülü telefonlar üçün bəzi düzəlişlər (iPhone 6/7/8 Plus, Galaxy S8/S9 kimi) */
+@media (min-width: 421px) and (max-width: 500px) {
+    .container {
+        width: 100%;
+        height: 100vh;
+        max-width: none;
+        border-radius: 0;
+        box-shadow: none;
+    }
+
+    body {
+        align-items: flex-start;
+        justify-content: flex-start;
+    }
+
+    .header, .top-bar, .bottom-nav, .cart-summary {
+        width: 100%;
+        max-width: none;
+        left: 0;
+        transform: none;
+        border-radius: 0;
+    }
+
+    .cart-summary {
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+    }
+
+    .language-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+        padding: 0 20px;
+    }
+
+    .confirm-btn {
+        width: calc(100% - 40px);
+    }
+
+    .menu-content {
+        padding: 0 15px 100px;
+    }
+
+    .tea-sets-grid {
+        grid-template-columns: repeat(2, 1fr); /* Orta ekranlarda 2 sütun saxlaya bilərik */
+        gap: 15px;
+    }
+}
